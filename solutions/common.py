@@ -20,7 +20,7 @@ def get_input(day: int) -> list[str]:
     return r.text.splitlines()
 
 
-def submit_answer(day: int, part: int, answer: Any) -> None:
+def submit_answer(day: int, part: int, answer: Any = "") -> None:
     """Submit the answer to the AoC website"""
     load_dotenv()
     if os.environ.get("AOC_SESSION_COOKIE") is None:
@@ -73,7 +73,7 @@ def get_challenge(day: int, include_part_two: bool = False) -> dict[str, str]:
     return challenge
 
 
-def request_problem_summary(
+def request_challenge_summary(
     day: int, store=True, include_part_two=False
 ) -> dict[str, Any]:
     """Get the problem summary for the day"""
@@ -126,7 +126,7 @@ def request_problem_summary(
     )
 
     openai_client = Client()
-    completion = openai_client.chat.completions.create(model="gpt-4", messages=messages)
+    completion = openai_client.chat.completions.create(model="gpt-4", messages=messages)  # type: ignore
     ic(completion)
 
     challenge["summary"] = completion.choices[0].message.content  # type: ignore
@@ -134,7 +134,10 @@ def request_problem_summary(
     if store:
         if not os.path.exists("summaries"):
             os.mkdir("summaries")
-        p = os.path.join("summaries", f"challenge_{day}.md")
+        if include_part_two:
+            p = os.path.join("summaries", f"challenge_{day}_w_part_2.md")
+        else:
+            p = os.path.join("summaries", f"challenge_{day}.md")
         with open(p, "w") as f:
             f.write("# " + challenge["title"] + "\n\n")
             f.write("## Part One\n\n")
