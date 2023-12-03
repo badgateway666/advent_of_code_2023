@@ -82,7 +82,9 @@ def request_problem_summary(day: int, store=True) -> dict[str, Any]:
             f.write("# " + problem["title"] + "\n\n")
             f.write("\n\n".join(problem["challenge_text"]) + "\n\n")
             f.write("## Input\n\n")
-            f.write("\n".join(problem["input"]) + "\n\n")
+            f.write("```\n")
+            f.write("\n\n".join(problem["input"]) + "\n\n")
+            f.write("```\n\n")
             f.write(problem["summary"])
 
     return problem
